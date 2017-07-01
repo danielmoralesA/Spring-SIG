@@ -1,0 +1,10 @@
+
+@CHARSET "UTF-8";
+.jumbotron{
+	 /* add bootstrap jumbotron background image */
+    background:  url(../img/banner.png);
+    background-size: cover	;
+    /* change bootstrap jumbotron text color */
+    color: #FFF;
+	
+}

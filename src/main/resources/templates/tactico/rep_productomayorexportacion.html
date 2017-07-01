@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf/extras/springsecurity">
+<head>
+<meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<title>SIGTMA Administracion</title>
+ <link rel="stylesheet" href="../static/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}" />
+ 
+ <link rel="stylesheet" href="../static/css/bootstrap.css" th:href="@{/css/bootstrap.css}" />
+ <link rel="stylesheet" href="../static/css/estilo.css" th:href="@{/css/estilo.css}"/>
+ 
+  <link rel="stylesheet" href="../static/css/bootstrap-theme.min.css" th:href="@{/css/bootstrap-theme.min.css}" />
+   <link rel="stylesheet" href="../static/css/bootstrap-theme.css" th:href="@{/css/bootstrap-theme.css}" />
+  
+ 
+ <!-- <link rel="stylesheet" href="../static/css/custom.min.css" th:href="@{/css/custom.min.css}"/> -->
+ <!-- fuentes -->
+ 
+ <!-- js -->
+ <script type="text/javascript" src="../static/js/jquery-3.2.1.min.js" th:src="@{/js/jquery-3.2.1.min.js}"></script>
+ <script type="text/javascript" src="../static/js/bootstrap.min.js" th:src="@{/js/bootstrap.min.js}"></script>
+ <script type="text/javascript" src="../static/js/bootstrap.js" th:src="@{/js/bootstrap.js}"></script>
+  <script type="text/javascript" src="../static/js/npm.js" th:src="@{/js/npm.js}"></script>
+  
+  <script>
+
+     var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-23019901-1']);
+      _gaq.push(['_setDomainName', "bootswatch.com"]);
+        _gaq.push(['_setAllowLinker', true]);
+      _gaq.push(['_trackPageview']);
+
+     (function() {
+       var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+       ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+       var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+     })();
+
+    </script>
+    
+
+    <script type="text/javascript">
+
+    $(document).ready(function(){
+
+        $(".dropdown-toggle").dropdown('toggle');
+
+    });  
+
+    </script>
+
+<!-- degenere para el paginator -->
+<script text="text/javascript"  th:inline="javascript">
+/*<![CDATA[*/
+$.fn.pageMe = function(opts){
+    var $this = this,
+        defaults = {
+            perPage: 7,
+            showPrevNext: false,
+            hidePageNumbers: false
+        },
+        settings = $.extend(defaults, opts);
+    
+    var listElement = $this;
+    var perPage = settings.perPage; 
+    var children = listElement.children();
+    var pager = $('.pager');
+    
+    if (typeof settings.childSelector!="undefined") {
+        children = listElement.find(settings.childSelector);
+    }
+    
+    if (typeof settings.pagerSelector!="undefined") {
+        pager = $(settings.pagerSelector);
+    }
+    
+    var numItems = children.size();
+    var numPages = Math.ceil(numItems/perPage);
+
+    pager.data("curr",0);
+    
+    if (settings.showPrevNext){
+        $('<li><a href="#" class="prev_link">«</a></li>').appendTo(pager);
+    }
+    
+    var curr = 0;
+    while(numPages > curr && (settings.hidePageNumbers==false)){
+        $('<li><a href="#" class="page_link">'+(curr+1)+'</a></li>').appendTo(pager);
+        curr++;
+    }
+    
+    if (settings.showPrevNext){
+        $('<li><a href="#" class="next_link">»</a></li>').appendTo(pager);
+    }
+    
+    pager.find('.page_link:first').addClass('active');
+    pager.find('.prev_link').hide();
+    if (numPages<=1) {
+        pager.find('.next_link').hide();
+    }
+  	pager.children().eq(1).addClass("active");
+    
+    children.hide();
+    children.slice(0, perPage).show();
+    
+    pager.find('li .page_link').click(function(){
+        var clickedPage = $(this).html().valueOf()-1;
+        goTo(clickedPage,perPage);
+        return false;
+    });
+    pager.find('li .prev_link').click(function(){
+        previous();
+        return false;
+    });
+    pager.find('li .next_link').click(function(){
+        next();
+        return false;
+    });
+    
+    function previous(){
+        var goToPage = parseInt(pager.data("curr")) - 1;
+        goTo(goToPage);
+    }
+     
+    function next(){
+        goToPage = parseInt(pager.data("curr")) + 1;
+        goTo(goToPage);
+    }
+    
+    function goTo(page){
+        var startAt = page * perPage,
+            endOn = startAt + perPage;
+        
+        children.css('display','none').slice(startAt, endOn).show();
+        
+        if (page>=1) {
+            pager.find('.prev_link').show();
+        }
+        else {
+            pager.find('.prev_link').hide();
+        }
+        
+        if (page<(numPages-1)) {
+            pager.find('.next_link').show();
+        }
+        else {
+            pager.find('.next_link').hide();
+        }
+        
+        pager.data("curr",page);
+      	pager.children().removeClass("active");
+        pager.children().eq(page+1).addClass("active");
+    
+    }
+};
+
+$(document).ready(function(){
+    
+  $('#cuerpo').pageMe({pagerSelector:'#myPager',showPrevNext:true,hidePageNumbers:false,perPage:2});
+    
+});
+
+/*]]>*/
+</script>
+
+    
+</head>
+<body> 
+
+
+<nav class="navbar navbar-inverse">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="#">SIGTMA </a>
+    </div>
+
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+        <li   class="active"><a href="#" th:href="@{/admin/usuario}" sec:authorize="hasAuthority('ADMIN')" >Usuarios<span class="sr-only">(current)</span></a></li>
+        
+        <li sec:authorize="hasAnyAuthority('TACTICO','ESTRATEGICO','ADMIN')" class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Reportes Tacticos <span class="caret"></span></a>
+          <ul  class="dropdown-menu" role="menu">
+            <li><a href="#" th:href="@{/tactico/cap_paramempleado}">Empleado Con Mayor Numero De Clientes</a></li>
+            <li><a href="#" th:href="@{/tactico/cap_paramsembarfecha}">Embarque Realizado Por Fecha Especifica</a></li>
+            <li><a href="#" th:href="@{/tactico/cap_producto}">Productos de Mayor Exportacion</a></li>
+            <li><a href="#" th:href="@{/tactico/cap_paramnuevosclientes}">Nuevos Clientes</a></li>
+            <li><a href="#" th:href="@{/tactico/cap_paramexportar}">Embarcaciones por pais</a></li>
+            <li><a href="#" th:href="@{/tactico/cap_paramservicio}">Servicios de Trámites</a></li>
+            
+          </ul>
+        </li>
+        <li sec:authorize="hasAnyAuthority('ESTRATEGICO','ADMIN')" class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Reportes Estrategicos <span class="caret"></span></a>
+          <ul  class="dropdown-menu" role="menu">
+            <li><a href="#" th:href="@{/estrategico/cap_paramnoservicio}">Clientes que no han contratado el servicio</a></li>
+            <li><a href="#" th:href="@{/estrategico/cap_paramclientemora}">Clientes que están en mora</a></li>
+            <li><a href="#" th:href="@{/estrategico/cap_parametros}">Mejores Clientes</a></li>
+            <li><a href="#" th:href="@{/estrategico/cap_paramganancias}">Ganancias mensuales</a></li>
+            <li><a href="#" th:href="@{/estrategico/cap_paramembarque}">Embarques Mensual por cliente especifico</a></li>
+            
+            
+          </ul>
+        </li>
+        
+        
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+      <li class="dropdown">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+      <span class="glyphicon glyphicon-user"></span>Usuario: <span sec:authentication="name"></span></a>
+      	<ul class="dropdown-menu" role="menu">	
+      		<li><a href="#" th:href="@{/logout}">Salir</a></li>
+      	</ul>
+      </li>
+      </ul>	
+      
+    </div>
+  </div>
+</nav>
+
+<div class="container">
+    <div class="jumbotron">
+       <br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
+    </div>
+</div>
+<!-- cuerpo de trabajo -->
+<div class="container">
+
+<!-- Aqui definiremos una tabla con datos para mostrar como reporte  -->
+<!-- cabecera con los datos  -->
+<form class="form-horizontal" id="eventForm" th:action="@{/estrategico/rep_mejoresclientes}"  method="post" role="form">
+<fieldset>
+<!-- titulo del reporte -->
+ <legend>Productos de Mayor Exportacion</legend>
+  <div class="form-group">
+      <label for="nombre" class="col-lg-2 control-label">Nombre Formulario:</label>
+      <div class="col-lg-2">
+        <input class="form-control" id="nombre" placeholder="REP-PMEXPOR" type="text" disabled="disabled"/>
+      </div>
+      
+      <label for="fech" class="col-lg-2 control-label">Fecha emision</label>
+      <div class="col-lg-2">
+        <input class="form-control" id="fech" placeholder="22/05/2017" type="text" disabled="disabled"/>
+      </div>
+  </div>
+  <div class="form-group">
+  	<label for="nombuser" class="col-lg-2 control-label">Nombre Usuario:</label>
+      <div class="col-lg-2">
+      	<span sec:authentication="name"></span>
+      </div>
+  
+  </div>
+
+
+<!--  aqui inicia el proceso para la formacion de las tablas con los datos -->
+<div class="container">
+<div class="row">
+	<div class="table-responsive">
+		<table id="example" class="table table-bordered" cellspacing="0">
+			<thead>
+			 <tr>
+				<th>N°</th>
+				<th>Nombre Producto</th>
+				<th>Proveedor</th>
+				<th>Cantidad</th>
+				<th>Arancel</th> 
+			 </tr>
+			 </thead>
+			 <tbody id="cuerpo">
+			 	<tr>
+			 		<td>1</td>
+			 		<td>XBOX 360</td>
+			 		<td>Enim Corp</td>
+			 		<td>1000</td>
+			 		<td>$300.00</td>
+			 	
+			 	</tr>
+			 	<tr>
+			 		<td>2</td>
+			 		<td>PS3</td>
+			 		<td>SONY</td>
+			 		<td>1000</td>
+			 		<td>$500.00</td>
+			 	</tr>
+			 	<tr>
+			 		<td>3</td>
+			 		<td>Corrolla</td>
+			 		<td>Toyota</td>
+			 		<td>3</td>
+			 		<td>$1000.00</td>
+			 	
+			 	</tr>
+			 	<tr>
+			 		<td>4</td>
+			 		<td>Laptop lenovo</td>
+			 		<td>Lenovo</td>
+			 		<td>250</td>
+			 		<td>$1200.00</td>
+			 	</tr>
+			 	<tr>
+			 		<td>5</td>
+			 		<td>Lavadora LG</td>
+			 		<td>LG</td>
+			 		<td>300</td>
+			 		<td>$350.00</td>
+			 	</tr>
+			 	<tr>
+			 		<td>6</td>
+			 		<td>3DS</td>
+			 		<td>Nintendo</td>
+			 		<td>200</td>
+			 		<td>$1000.00</td>
+			 	</tr>
+			 	<tr>
+			 		<td>7</td>
+			 		<td>Smocking</td>
+			 		<td>Smock</td>
+			 		<td>200</td>
+			 		<td>$250.00</td>
+			 	</tr>
+			 	<tr>
+			 		<td>8</td>
+			 		<td>GALAXY S6</td>
+			 		<td>SAMSUNG</td>
+			 		<td>500</td>
+			 		<td>$2000.00</td>
+			 	</tr>
+			 	<tr>
+			 		<td>9</td>
+			 		<td>Cacerolas</td>
+			 		<td>willpool</td>
+			 		<td>600</td>
+			 		<td>$800.00</td>
+			 	</tr>
+			 	<tr>
+			 		<td>10</td>
+			 		<td>PS4</td>
+			 		<td>Sony</td>
+			 		<td>250</td>
+			 		<td>$1200.00</td>
+			 	
+			 	</tr>
+			 	
+			 </tbody>
+		
+		</table>
+	
+	
+	</div>
+	<!-- paginacion  -->
+	<div class="col-md-12 text-center">
+      <ul class="pagination pagination-lg pager" id="myPager"></ul>
+     </div>
+    <!-- fin paginacion -->
+	</div>
+	<!-- Aqui termina el genere de las tablas -->
+<!-- fin al desvergue de la tabla -->
+</div>
+
+<div class="form-group">
+      <div class="col-lg-10 col-lg-offset-2">
+        
+        <button type="submit" class="btn btn-primary">Generar archivo</button>
+        <button type="submit" class="btn btn-danger">Cancelar</button>
+      </div>
+     
+        
+        
+     
+ </div>
+
+</fieldset>
+</form>
+
+
+
+
+
+
+<hr/>
+<hr/>
+<footer>
+	<p>&copy; COMCA El Salvador </p>
+</footer>
+
+</div>
+
+
+
+</body>
+</html>

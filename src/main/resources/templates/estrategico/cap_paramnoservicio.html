@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf/extras/springsecurity">
+<head>
+<meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<title>SIGTMA Administracion</title>
+ <link rel="stylesheet" href="../static/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}" />
+  <link rel="stylesheet" href="../static/css/bootstrap.css" th:href="@{/css/bootstrap.css}" />
+   <link rel="stylesheet" href="../static/css/estilo.css" th:href="@{/css/estilo.css}"/>
+  
+ <link rel="stylesheet" href="../static/css/datepicker.css" th:href="@{/css/datepicker.css}" />
+ <link rel="stylesheet" href="../static/css/daterangepicker.css" th:href="@{/css/daterangepicker.css}" />
+ 
+ <link rel="stylesheet" href="../static/css/bootstrap.css" th:href="@{/css/bootstrap.css}" />
+  <link rel="stylesheet" href="../static/css/bootstrap-theme.min.css" th:href="@{/css/bootstrap-theme.min.css}" />
+   <link rel="stylesheet" href="../static/css/bootstrap-theme.css" th:href="@{/css/bootstrap-theme.css}" />
+  
+  
+  <style type="text/css">
+  	#eventForm .dateContainer .form-control-feedback {
+    top: 0;
+    right: -15px;
+}
+  
+  </style>
+ 
+ <!-- <link rel="stylesheet" href="../static/css/custom.min.css" th:href="@{/css/custom.min.css}"/> -->
+ <!-- fuentes -->
+ 
+ <!-- js -->
+ <script type="text/javascript" src="../static/js/jquery-3.2.1.min.js" th:src="@{/js/jquery-3.2.1.min.js}"></script>
+ <script type="text/javascript" src="../static/js/bootstrap.min.js" th:src="@{/js/bootstrap.min.js}"></script>
+  <script type="text/javascript" src="../static/js/bootstrap.min.js" th:src="@{/js/bootstrap.min.js}"></script>
+  <script type="text/javascript" src="../static/js/bootstrap-datepicker.js" th:src="@{/js/bootstrap-datepicker.js}"></script>
+ <script type="text/javascript" src="../static/js/moment.js" th:src="@{/js/moment.js}"></script>
+ <script type="text/javascript" src="../static/js/bootstrap.js" th:src="@{/js/bootstrap.js}"></script>
+  <script type="text/javascript" src="../static/js/npm.js" th:src="@{/js/npm.js}"></script>
+  <script type="text/javascript" src="../static/js/daterangepicker.js" th:src="@{/js/daterangepicker.js}"></script>
+  <script>
+
+     var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-23019901-1']);
+      _gaq.push(['_setDomainName', "bootswatch.com"]);
+        _gaq.push(['_setAllowLinker', true]);
+      _gaq.push(['_trackPageview']);
+
+     (function() {
+       var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+       ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+       var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+     })();
+
+    </script>
+    
+
+    <script type="text/javascript">
+
+    $(document).ready(function(){
+
+        $(".dropdown-toggle").dropdown('toggle');
+
+    });  
+
+    </script>
+
+    
+</head>
+<body> 
+<nav class="navbar navbar-inverse">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="#">SIGTMA </a>
+    </div>
+
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+        <li   class="active"><a href="#" th:href="@{/admin/usuario}" sec:authorize="hasAuthority('ADMIN')" >Usuarios<span class="sr-only">(current)</span></a></li>
+        
+        <li sec:authorize="hasAnyAuthority('TACTICO','ESTRATEGICO','ADMIN')" class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Reportes Tacticos <span class="caret"></span></a>
+          <ul  class="dropdown-menu" role="menu">
+            <li><a href="#" th:href="@{/tactico/cap_paramempleado}">Empleado Con Mayor Numero De Clientes</a></li>
+            <li><a href="#" th:href="@{/tactico/cap_paramsembarfecha}">Embarque Realizado Por Fecha Especifica</a></li>
+            <li><a href="#" th:href="@{/tactico/cap_producto}">Productos de Mayor Exportacion</a></li>
+            <li><a href="#" th:href="@{/tactico/cap_paramnuevosclientes}">Nuevos Clientes</a></li>
+            <li><a href="#" th:href="@{/tactico/cap_paramexportar}">Embarcaciones por pais</a></li>
+            <li><a href="#" th:href="@{/tactico/cap_paramservicio}">Servicios de Trámites</a></li>
+            
+          </ul>
+        </li>
+        <li sec:authorize="hasAnyAuthority('ESTRATEGICO','ADMIN')" class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Reportes Estrategicos <span class="caret"></span></a>
+          <ul  class="dropdown-menu" role="menu">
+            <li><a href="#" th:href="@{/estrategico/cap_paramnoservicio}">Clientes que no han contratado el servicio</a></li>
+            <li><a href="#" th:href="@{/estrategico/cap_paramclientemora}">Clientes que están en mora</a></li>
+            <li><a href="#" th:href="@{/estrategico/cap_parametros}">Mejores Clientes</a></li>
+            <li><a href="#" th:href="@{/estrategico/cap_paramganancias}">Ganancias mensuales</a></li>
+            <li><a href="#" th:href="@{/estrategico/cap_paramembarque}">Embarques Mensual por cliente especifico</a></li>
+            
+            
+          </ul>
+        </li>
+        
+        
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+      <li class="dropdown">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+      <span class="glyphicon glyphicon-user"></span>Usuario: <span sec:authentication="name"></span></a>
+      	<ul class="dropdown-menu" role="menu">	
+      		<li><a href="#" th:href="@{/logout}">Salir</a></li>
+      	</ul>
+      </li>
+      </ul>	
+      
+    </div>
+  </div>
+</nav>
+
+<div class="container">
+    <div class="jumbotron">
+       <br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
+    </div>
+</div>
+<!-- aqui pondremos la parte para la captura  de parametros -->
+<div class="container">
+<form class="form-horizontal" id="eventForm" th:object="${bitacora}" th:action="@{/estrategico/cap_paramnoservicio}"  method="post" role="form">
+  <fieldset>
+    <legend>Clientes que no han contratado el servicio</legend>
+    
+    <div class="form-group">
+      <label for="nombre" class="col-lg-2 control-label">Nombre Formulario:</label>
+      <div class="col-lg-2">
+        <input class="form-control" id="nombre" placeholder="REP-CNOSERVICE" type="text" disabled="disabled"/>
+      </div>
+    </div>
+    <div class="form-group">
+    	<label for="fecha"  class="col-lg-2 control-label" >Fecha desde:</label>
+	    <div class="col-lg-2 dateContainer" id="iniciaFecha">
+	      <input id="fecha" type="text" name="fecha1" class="form-control"  />
+	                     
+	    </div>  
+	    
+	    <label for="fecha2" class="col-lg-2 control-label" >Fecha hasta:</label>
+	    <div class="col-lg-2 dateContainer" id="finFecha">
+	      <input id="fecha" type="text" name="fecha2" class="form-control"  />
+	                     
+	    </div>
+	</div>
+    
+    
+    
+    
+    <div class="form-group">
+      <div class="col-lg-10 col-lg-offset-2">
+        
+        <button type="submit" class="btn btn-primary">Generar reporte</button>
+      </div>
+    </div>
+  </fieldset>
+</form>
+<hr/>
+<hr/>
+<footer>
+	<p>&copy; COMCA El Salvador </p>
+</footer>
+
+
+</div>
+<script type="text/javascript">
+		$(function(){
+			$('input[name="fecha1"]').daterangepicker({
+				locale: {
+				      format: 'YYYY-MM-DD'
+				},
+				
+				singleDatePicker: true,
+				showDropdowns: true
+				
+			});
+			
+			
+			
+		});
+
+</script>
+<script type="text/javascript">
+		$(function(){
+			$('input[name="fecha2"]').daterangepicker({
+				locale: {
+				      format: 'YYYY-MM-DD'
+				},
+				
+				singleDatePicker: true,
+				showDropdowns: true
+				
+					
+				
+			});
+			
+			
+			
+		});
+
+</script>
+<script text="text/javascript"  th:inline="javascript">
+/*<![CDATA[*/
+	var fechainical=$('#fecha1').val();
+	var fechafinal=$('#fecha2').val();
+	if(!moment())
+	  /*]]>*/
+
+</script>
+</body>
+</html>
