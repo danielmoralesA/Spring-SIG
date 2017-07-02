@@ -1,19 +1,30 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" 
-xmlns:sec="http://www.thymeleaf.org/thymeleaf/extras/springsecurity">
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf/extras/springsecurity">
 <head>
 <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<title>SIGTMA Administracion</title>
+<title>SIGTMA Administracion </title>
  <link rel="stylesheet" href="../static/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}" />
+  <link rel="stylesheet" href="../static/css/bootstrap.css" th:href="@{/css/bootstrap.css}" />
+   <link rel="stylesheet" href="../static/css/estilo.css" th:href="@{/css/estilo.css}"/>
+  
+ <link rel="stylesheet" href="../static/css/datepicker.css" th:href="@{/css/datepicker.css}" />
+ <link rel="stylesheet" href="../static/css/daterangepicker.css" th:href="@{/css/daterangepicker.css}" />
  
  <link rel="stylesheet" href="../static/css/bootstrap.css" th:href="@{/css/bootstrap.css}" />
-  <link rel="stylesheet" href="../static/css/estilo.css" th:href="@{/css/estilo.css}"/>
- 
   <link rel="stylesheet" href="../static/css/bootstrap-theme.min.css" th:href="@{/css/bootstrap-theme.min.css}" />
    <link rel="stylesheet" href="../static/css/bootstrap-theme.css" th:href="@{/css/bootstrap-theme.css}" />
   
+  
+  <style type="text/css">
+  	#eventForm .dateContainer .form-control-feedback {
+    top: 0;
+    right: -15px;
+}
+  
+  </style>
  
  <!-- <link rel="stylesheet" href="../static/css/custom.min.css" th:href="@{/css/custom.min.css}"/> -->
  <!-- fuentes -->
@@ -21,9 +32,12 @@ xmlns:sec="http://www.thymeleaf.org/thymeleaf/extras/springsecurity">
  <!-- js -->
  <script type="text/javascript" src="../static/js/jquery-3.2.1.min.js" th:src="@{/js/jquery-3.2.1.min.js}"></script>
  <script type="text/javascript" src="../static/js/bootstrap.min.js" th:src="@{/js/bootstrap.min.js}"></script>
+  <script type="text/javascript" src="../static/js/bootstrap.min.js" th:src="@{/js/bootstrap.min.js}"></script>
+  <script type="text/javascript" src="../static/js/bootstrap-datepicker.js" th:src="@{/js/bootstrap-datepicker.js}"></script>
+ <script type="text/javascript" src="../static/js/moment.js" th:src="@{/js/moment.js}"></script>
  <script type="text/javascript" src="../static/js/bootstrap.js" th:src="@{/js/bootstrap.js}"></script>
   <script type="text/javascript" src="../static/js/npm.js" th:src="@{/js/npm.js}"></script>
-  
+  <script type="text/javascript" src="../static/js/daterangepicker.js" th:src="@{/js/daterangepicker.js}"></script>
   <script>
 
      var _gaq = _gaq || [];
@@ -54,7 +68,6 @@ xmlns:sec="http://www.thymeleaf.org/thymeleaf/extras/springsecurity">
     
 </head>
 <body> 
-
 <nav class="navbar navbar-inverse">
   <div class="container-fluid">
     <div class="navbar-header">
@@ -74,28 +87,27 @@ xmlns:sec="http://www.thymeleaf.org/thymeleaf/extras/springsecurity">
         <ul class="dropdown-menu" role="menu">
         	 <li><a href="#"    th:href="@{/admin/usuariolist}">Administracion de usuarios</a></li>
         </ul>
-        </li>       
-         
+        </li>        
         <li sec:authorize="hasAnyAuthority('TACTICO','ESTRATEGICO','ADMIN')" class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Reportes Tacticos <span class="caret"></span></a>
           <ul  class="dropdown-menu" role="menu">
-            <li><a href="#">Embarque Mensual Por Cliente Especifico</a></li>
-            <li><a href="#">Embarque Realizado Por Fecha Especifica</a></li>
-            <li><a href="#">Productos de Mayor Exportacion</a></li>
-            <li><a href="#">Nuevos Clientes</a></li>
-            <li><a href="#">Embarcaciones por pais</a></li>
-            <li><a href="#">Servicios de Trámites</a></li>
+            <li><a href="#" th:href="@{/tactico/cap_paramempleado}">Empleado Con Mayor Numero De Clientes</a></li>
+            <li><a href="#" th:href="@{/tactico/cap_paramsembarfecha}">Embarque Realizado Por Fecha Especifica</a></li>
+            <li><a href="#" th:href="@{/tactico/cap_producto}">Productos de Mayor Exportacion</a></li>
+            <li><a href="#" th:href="@{/tactico/cap_paramnuevosclientes}">Nuevos Clientes</a></li>
+            <li><a href="#" th:href="@{/tactico/cap_paramexportar}">Embarcaciones por pais</a></li>
+            <li><a href="#" th:href="@{/tactico/cap_paramservicio}">Servicios de Trámites</a></li>
             
           </ul>
         </li>
         <li sec:authorize="hasAnyAuthority('ESTRATEGICO','ADMIN')" class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Reportes Estrategicos <span class="caret"></span></a>
           <ul  class="dropdown-menu" role="menu">
-            <li><a href="#">Clientes que no han contratado el servicio</a></li>
-            <li><a href="#">Clientes que están en mora</a></li>
-            <li><a href="#">Mejores Clientes</a></li>
-            <li><a href="#">Ganancias mensuales</a></li>
-            <li><a href="#">Embarques Mensual por cliente especifico</a></li>
+            <li><a href="#" th:href="@{/estrategico/cap_paramnoservicio}">Clientes que no han contratado el servicio</a></li>
+            <li><a href="#" th:href="@{/estrategico/cap_paramclientemora}">Clientes que están en mora</a></li>
+            <li><a href="#" th:href="@{/estrategico/cap_parametros}">Mejores Clientes</a></li>
+            <li><a href="#" th:href="@{/estrategico/cap_paramganancias}">Ganancias mensuales</a></li>
+            <li><a href="#" th:href="@{/estrategico/cap_paramembarque}">Embarques Mensual por cliente especifico</a></li>
             
             
           </ul>
@@ -123,59 +135,51 @@ xmlns:sec="http://www.thymeleaf.org/thymeleaf/extras/springsecurity">
     </div>
 </div>
 
-<!-- cuerpo de trabajo -->
 <div class="container">
-<form class="form-horizontal" th:action="@{/admin/usuario}" th:object="${usuarios}" method="post" role="form">
-  <fieldset>
-    <legend>Registro de Usuarios</legend>
-     <span th:utext="${successMessage}"></span>
-    <div class="form-group">
-    <label th:if="${#fields.hasErrors('nomUsuario')}" th:errors="*{nomUsuario}" 
-    class="Validation-message"></label>
-      <label for="nombre" class="col-lg-2 control-label">Nombre Usuario</label>
-      <div class="col-lg-4">
-        <input class="form-control" th:field="*{nomUsuario}"  id="nombre" name="nomUsuario" placeholder="Nombre usuario" type="text"/>
-      </div>
-    </div>
-    <div class="form-group">
-    
-      <label for="inputPassword" class="col-lg-2 control-label">Contraseña</label>
-      <div class="col-lg-4">
-        <input class="form-control" th:field="*{password}" name="password" id="inputPassword" placeholder="Contraeña" type="password"/>
-        <label th:if="${#fields.hasErrors('password')}" th:errors="*{password}"
-								class="validation-message"></label>
-      </div>
-    </div>
-    <div class="form-group">
-      <label for="rol" class="col-lg-2 control-label">PERFIL</label>
-      <div class="col-lg-4">
-       <select  name="idRol" class="form-control" >
-       	<option value="" th:disabled="disabled" th:selected="selected">Perfil de usuario</option>
-       	<option th:each="roles : ${rol}" th:value="${roles.idRol}" th:text="${roles.nomRol}"></option>
-       	
-       </select>
-        
-      </div>
-    </div>
-    
-    
-    	
-    
-    <div class="form-group">
-      <div class="col-lg-10 col-lg-offset-2">
-        
-        <button type="submit" class="btn btn-primary">Guardar</button>
-      </div>
-    </div>
-  </fieldset>
- 
-</form>
-<a href="#" th:href="@{/admin/usuariolist}" class="btn btn-success">Regresar a la lista</a>
+	<h1>Registros de usuarios</h1>
+	<div style="padding:0 20px">
+		<table class="table table-striped">
+			<tr>
+				<th>ID Usuario</th>
+				<th>Nombre Usuario</th>
+				<th>Estado</th>
+				<th>Rol</th>
+			
+			
+			</tr>
+			
+			<tr th:each= "usuarios : ${usuarios}">
+				<td th:text="${usuarios.idUsuario}"></td>
+				<td th:text="${usuarios.nomUsuario}"></td>
+				<td th:switch="${usuarios.activo}">
+					<span th:case="'1'">Activo</span>
+					<span th:case="*">Inactivo</span>
+				</td>
+				<td>
+					<span th:each="roles,iterStat : ${usuarios.roles}">
+						<span th:text="${roles.nomRol}"/><th:block th:if="${!iterStat.last}">,</th:block>
+					</span> 
+				</td>
+				<td>
+					
+    				<a th:href="@{/admin/delete/{id}(id=${usuarios.idUsuario})}" class="btn btn-danger btn-xs">Eliminar</a>
+				</td>
+			
+			</tr>
+			
+		
+		</table>
+		<a href="#" th:href="@{/admin/usuario}" class="btn btn-success">Agregar nuevo</a>
+	
+	</div>
+
 <hr/>
 <hr/>
 <footer>
 	<p>&copy; COMCA El Salvador </p>
 </footer>
+
 </div>
+
 </body>
 </html>

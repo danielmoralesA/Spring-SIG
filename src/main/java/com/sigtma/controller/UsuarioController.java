@@ -12,8 +12,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 
@@ -95,7 +97,7 @@ public class UsuarioController {
 			userService.save(user,rol);
 			modelAndView.addObject("successMessage", "Usuario registrado exitosamente");
 			modelAndView.addObject("usuarios", new Usuarios());
-			modelAndView.setViewName("admin/usuario");
+			modelAndView.setViewName("/admin/usuario");
 					
 		}
 		return modelAndView;
@@ -110,5 +112,35 @@ public class UsuarioController {
 		return roles;
 		
 	}
+	
+	//vista de usuarios registrados
+
+	
+	
+	//lista de usuarios con su respectivo rol
+	@RequestMapping("/admin/usuariolist")
+	public String list(Model model){
+		List<Usuarios> user=(List<Usuarios>)userdao.findAll();
+		model.addAttribute("usuarios",user);
+		return "admin/usuariolist";
+		
+	}
+	
+	/*@RequestMapping(value="/admin/usuariolist", method=RequestMethod.GET)
+	public @ResponseBody List<Usuarios> getUser(){
+		return (List<Usuarios>)userdao.findAll();
+		
+	} */
+	
+	//eliminar usuario (desactivar)
+	 @RequestMapping(value = "/admin/delete/{id}", method = RequestMethod.GET)
+	    public String editRemoveEmployee(@PathVariable("id") int id, Model model) {
+	    	//repository.delete(studentId);
+		 	Usuarios user=new Usuarios();
+		 	user=userdao.findOne(id);
+		 	user.setActivo(0);
+		 	userdao.save(user);
+	        return "redirect:/admin/usuariolist";
+	    }  
 	
 }
