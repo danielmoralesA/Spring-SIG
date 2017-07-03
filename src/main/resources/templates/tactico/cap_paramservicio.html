@@ -132,14 +132,14 @@
 </div>
 <!-- aqui pondremos la parte para la captura  de parametros -->
 <div class="container">
-<form class="form-horizontal" id="eventForm" th:object="${bitacora}" th:action="@{/tactico/cap_paramexportar}"  method="post" role="form">
+<form class="form-horizontal" id="eventForm" th:object="${bitacora}" th:action="@{/tactico/cap_paramservicio}"  method="post" role="form">
   <fieldset>
     <legend>Clientes Que Contractan El Servicio De Tramites</legend>
     
     <div class="form-group">
       <label for="nombre" class="col-lg-2 control-label">Nombre Formulario:</label>
       <div class="col-lg-2">
-        <input class="form-control" id="nombre" placeholder="REP-EXPORTAR" type="text" disabled="disabled"/>
+        <input class="form-control" id="nombre" placeholder="REP-SERVICE" type="text" disabled="disabled"/>
       </div>
     </div>
     <div class="form-group">

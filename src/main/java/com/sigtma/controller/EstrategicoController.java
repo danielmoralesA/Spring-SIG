@@ -1,6 +1,8 @@
 package com.sigtma.controller;
 
 import org.springframework.context.ApplicationContext;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -9,7 +11,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.sql.DataSource;
 import javax.validation.Valid;
+
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -64,6 +68,11 @@ public class EstrategicoController {
 	@Autowired
 	private ClientemoraDao clientemoradao;
 	
+	@Autowired
+	private DataSource dbsource;
+	
+	private static final String DATASOURCE = "datasource";
+
 	
 	
 	private Bitacora histo;
@@ -101,10 +110,10 @@ public class EstrategicoController {
 			
 			
 					    String fechax=histo.getFecha1();
-		    String fechay=histo.getFecha1();
+		    String fechay=histo.getFecha2();
 			historepo.save(histo);
 				
-			return "redirect:/estrategico/rep_mejoresclientes";
+			return "redirect:/estrategico/rep_mejoresclientes/"+fechax+"/"+fechay;
 			
 		}
 		
@@ -121,25 +130,48 @@ public class EstrategicoController {
 	  return "estrategico/rep_mejoresclientes/rep_mejores";
 	  
   }*/
-		@RequestMapping(value="/estrategico/rep_mejoresclientes")
-		public ModelAndView ReportesMClientes() throws ParseException{
+		@RequestMapping(value="/estrategico/rep_mejoresclientes/{fechax}/{fechay}")
+		public ModelAndView ReportesMClientes(@PathVariable String fechax, @PathVariable String fechay) throws ParseException{
 			SimpleDateFormat dx=new SimpleDateFormat("yyyy-mm-dd");
-		//	Date fechaz=dx.parse(fecha1);
-			//Date fecha2=dx.parse(fechaz);
+			 Date fecha1=dx.parse(fechax);
+			 Date fecha2=dx.parse(fechay);
 			
 			
-			//List<RMejoresclientes> list=(List<RMejoresclientes>) rmejor.findByFechaventaBetween(fecha1, f);
-			List<Mejoresclientes> list=(List<Mejoresclientes>) rmejor.findAll();
+			List<Mejoresclientes> list=(List<Mejoresclientes>) rmejor.FindByFechaventaBetween(fecha1, fecha2);
+			//List<Mejoresclientes> list=(List<Mejoresclientes>) rmejor.findAll();
 			return new ModelAndView("estrategico/rep_mejoresclientes","listclientes",list);
 		}
 		
 		@RequestMapping(value="/reporte/pdf",method=RequestMethod.GET)
-		public ModelAndView getReporte(){
+		public ModelAndView getReporte() throws ParseException{
 			JasperReportsPdfView view=new JasperReportsPdfView();
-			view.setUrl("classpath:/salidas/estrategico/rep_clientesmejores.jrxml");
+		//	view.setUrl("classpath:/salidas/estrategico/rep_clientesmejores.jrxml");
+			view.setUrl("classpath:/salidas/Blank_Letter.jrxml");
 			view.setApplicationContext(appContext);
 			Map<String,Object> parms=new HashMap<>();
-			parms.put("datasource",rmejor.findAll());
+			//obtenemos el nombre del usuario
+		    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+			String user = authentication.getName();
+			//parms.put("nomUsuario",currentPrincipalName);
+			//llamada a obtener fechas
+			Bitacora bitacora=new Bitacora();
+			int x=Integer.parseInt(historepo.getnumid());
+			bitacora=historepo.findOne(x);
+			String fechax=bitacora.getFecha1();
+			String fechay=bitacora.getFecha2();
+			
+			SimpleDateFormat dx=new SimpleDateFormat("yyyy-mm-dd");
+		    Date fecha1=dx.parse(fechax);
+			Date fecha2=dx.parse(fechay);
+			
+		
+			List<Mejoresclientes> mc=rmejor.FindByFechaventaBetween(fecha1, fecha2);
+			int zx=mc.size();
+			parms.put("registros",zx);
+			parms.put("user",user);
+			parms.put("fecha1", fecha1);
+			parms.put("fecha2", fecha2);
+			parms.put("datasource",dbsource);
 			return new ModelAndView(view,parms);
 			
 		}
@@ -198,15 +230,26 @@ public class EstrategicoController {
 			Bitacora bitacora=new Bitacora();
 			int x=Integer.parseInt(historepo.getnumid());
 			bitacora=historepo.findOne(x);
-			String fecha1=bitacora.getFecha1();
-			String fecha2=bitacora.getFecha2();
+			String fechax=bitacora.getFecha1();
+			String fechay=bitacora.getFecha2();
 			
 			SimpleDateFormat dx=new SimpleDateFormat("yyyy-mm-dd");
-		    Date fechax=dx.parse(fecha1);
-			Date fechay=dx.parse(fecha2);
+		    Date fecha1=dx.parse(fechax);
+			Date fecha2=dx.parse(fechay);
+			
+			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+			String user = authentication.getName();
+		
 			
 			Map<String,Object> parms=new HashMap<>();
-			parms.put("datasource",ganarepo.findByFechaEmbarqueBetween(fechax, fechay));
+			
+			List<Gananciasmensuales> gana=ganarepo.findByFechaEmbarqueBetween(fecha1, fecha2);
+			int zx=gana.size();
+			parms.put("registros", zx);
+			parms.put("user", user);
+			parms.put("fecha1", fecha1);
+			parms.put("fecha2", fecha2);
+			parms.put("datasource",dbsource);
 			return new ModelAndView(view,parms);
 			
 		}
@@ -268,15 +311,27 @@ public class EstrategicoController {
 			Bitacora bitacora=new Bitacora();
 			int x=Integer.parseInt(historepo.getnumid());
 			bitacora=historepo.findOne(x);
-			String fecha1=bitacora.getFecha1();
-			String fecha2=bitacora.getFecha2();
+			String fechax=bitacora.getFecha1();
+			String fechay=bitacora.getFecha2();
 			
 			SimpleDateFormat dx=new SimpleDateFormat("yyyy-mm-dd");
-		    Date fechax=dx.parse(fecha1);
-			Date fechay=dx.parse(fecha2);
+		    Date fecha1=dx.parse(fechax);
+			Date fecha2=dx.parse(fechay);
+			
+			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+			String user = authentication.getName();
+			//obtenemos la lonigtud de la lista para enviar como parametros para tener el numero
+			//de registros
+			List<Clientenosevicio> noser=clientedao.findByFechUltimemBetween(fecha1, fecha2);
+			int zx=noser.size();
 			
 			Map<String,Object> parms=new HashMap<>();
-			parms.put("datasource",clientedao.findByFechUltimemBetween(fechax, fechay));
+			parms.put("registros", zx);
+			parms.put("user", user);
+			parms.put("fecha1", fecha1);
+			parms.put("fecha2", fecha2);
+			parms.put("datasource",dbsource);
+			//parms.put("datasource",clientedao.findByFechUltimemBetween(fechax, fechay));
 			return new ModelAndView(view,parms);
 			
 		}
@@ -336,15 +391,28 @@ public class EstrategicoController {
 			Bitacora bitacora=new Bitacora();
 			int x=Integer.parseInt(historepo.getnumid());
 			bitacora=historepo.findOne(x);
-			String fecha1=bitacora.getFecha1();
-			String fecha2=bitacora.getFecha2();
+			String fechax=bitacora.getFecha1();
+			String fechay=bitacora.getFecha2();
 			
 			SimpleDateFormat dx=new SimpleDateFormat("yyyy-mm-dd");
-		    Date fechax=dx.parse(fecha1);
-			Date fechay=dx.parse(fecha2);
+		    Date fecha1=dx.parse(fechax);
+			Date fecha2=dx.parse(fechay);
+			
+			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+			String user = authentication.getName();
+		
 			
 			Map<String,Object> parms=new HashMap<>();
-			parms.put("datasource",clientemoradao.findByFechContratacionBetween(fechax, fechay));
+			
+			//longitud de registros
+			List<Clientemora> cmora=clientemoradao.findByFechContratacionBetween(fecha1, fecha2);
+			int zx=cmora.size();
+			parms.put("registros", zx);
+			parms.put("user", user);
+			parms.put("fecha1", fecha1);
+			parms.put("fecha2", fecha2);
+			parms.put("datasource",dbsource);
+			//parms.put("datasource",clientemoradao.findByFechContratacionBetween(fechax, fechay));
 			return new ModelAndView(view,parms);
 			
 		}
@@ -403,15 +471,24 @@ public class EstrategicoController {
 			Bitacora bitacora=new Bitacora();
 			int x=Integer.parseInt(historepo.getnumid());
 			bitacora=historepo.findOne(x);
-			String fecha1=bitacora.getFecha1();
-			String fecha2=bitacora.getFecha2();
+			String fechax=bitacora.getFecha1();
+			String fechay=bitacora.getFecha2();
 			
 			SimpleDateFormat dx=new SimpleDateFormat("yyyy-mm-dd");
-		    Date fechax=dx.parse(fecha1);
-			Date fechay=dx.parse(fecha2);
+		    Date fecha1=dx.parse(fechax);
+			Date fecha2=dx.parse(fechay);
 			
+			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+			String user = authentication.getName();
+					
 			Map<String,Object> parms=new HashMap<>();
-			parms.put("datasource",embarrepo.findByFechasalidaBetween(fechax, fechay));
+			List<TbEmbarque> embar=embarrepo.findByFechasalidaBetween(fecha1, fecha2);
+			int zx=embar.size();
+			parms.put("registros", zx);
+			parms.put("user", user);
+			parms.put("fecha1", fecha1);
+			parms.put("fecha2", fecha2);
+			parms.put("datasource",dbsource);
 			return new ModelAndView(view,parms);
 			
 		}

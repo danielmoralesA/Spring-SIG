@@ -7,8 +7,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.sql.DataSource;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -53,7 +57,12 @@ public class TacticoController {
 	
 	@Autowired
 	private TbEmpleadoDao empdao;
+	
+	@Autowired
+	private DataSource dbsource;
 
+	private static final String DATASOURCE = "datasource";
+	
 	//pagina principal para registrar la entrada para los usuarios tactico
 	@RequestMapping("/tactico/tactico")
 	public String principal(){
@@ -121,16 +130,24 @@ public class TacticoController {
 		Bitacora bitacora=new Bitacora();
 		int x=Integer.parseInt(historepo.getnumid());
 		bitacora=historepo.findOne(x);
-		String fecha1=bitacora.getFecha1();
-		String fecha2=bitacora.getFecha2();
+		String fechax=bitacora.getFecha1();
+		String fechay=bitacora.getFecha2();
 		
 		SimpleDateFormat dx=new SimpleDateFormat("yyyy-mm-dd");
-	    Date fechax=dx.parse(fecha1);
-		Date fechay=dx.parse(fecha2);
+	    Date fecha1=dx.parse(fechax);
+		Date fecha2=dx.parse(fechay);
 		
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		String user = authentication.getName();
+		
+		List<TbEmbarque> emb=embarrepo.findByFechasalidaBetween(fecha1, fecha2);
+		int zx=emb.size();
 		Map<String,Object> parms=new HashMap<>();
-		parms.put("datasource",embarrepo.findByFechasalidaBetween(fechax, fechay));
-		return new ModelAndView(view,parms);
+		parms.put("registros", zx);
+		parms.put("user", user);
+		parms.put("fecha1", fecha1);
+		parms.put("fecha2", fecha2);
+		parms.put("datasource",dbsource);		return new ModelAndView(view,parms);
 		
 	}
 	
@@ -190,15 +207,27 @@ public class TacticoController {
 		Bitacora bitacora=new Bitacora();
 		int x=Integer.parseInt(historepo.getnumid());
 		bitacora=historepo.findOne(x);
-		String fecha1=bitacora.getFecha1();
-		String fecha2=bitacora.getFecha2();
+		String fechax=bitacora.getFecha1();
+		String fechay=bitacora.getFecha2();
 		
 		SimpleDateFormat dx=new SimpleDateFormat("yyyy-mm-dd");
-	    Date fechax=dx.parse(fecha1);
-		Date fechay=dx.parse(fecha2);
+	    Date fecha1=dx.parse(fechax);
+		Date fecha2=dx.parse(fechay);
+		
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		String user = authentication.getName();
+	
+		List<Exportacion> expo=expodao.findByFechasalidaBetween(fecha1, fecha2);
+		
+		int zx=expo.size();
 		
 		Map<String,Object> parms=new HashMap<>();
-		parms.put("datasource",expodao.findByFechasalidaBetween(fechax, fechay));
+		
+		parms.put("registros", zx);
+		parms.put("user", user);
+		parms.put("fecha1", fecha1);
+		parms.put("fecha2", fecha2);
+		parms.put("datasource",dbsource);
 		return new ModelAndView(view,parms);
 		
 	}
@@ -260,15 +289,25 @@ public class TacticoController {
 		Bitacora bitacora=new Bitacora();
 		int x=Integer.parseInt(historepo.getnumid());
 		bitacora=historepo.findOne(x);
-		String fecha1=bitacora.getFecha1();
-		String fecha2=bitacora.getFecha2();
+		String fechax=bitacora.getFecha1();
+		String fechay=bitacora.getFecha2();
 		
 		SimpleDateFormat dx=new SimpleDateFormat("yyyy-mm-dd");
-	    Date fechax=dx.parse(fecha1);
-		Date fechay=dx.parse(fecha2);
+	    Date fecha1=dx.parse(fechax);
+		Date fecha2=dx.parse(fechay);
+		
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		String user = authentication.getName();
 		
 		Map<String,Object> parms=new HashMap<>();
-		parms.put("datasource",nuevoclientedao.findByFechContratacionBetween(fechax, fechay));
+		List<Nuevosclientes> nuevoc=nuevoclientedao.findByFechContratacionBetween(fecha1, fecha2);
+		int zx=nuevoc.size();
+		parms.put("registros", zx);
+		parms.put("user", user);
+		parms.put("fecha1", fecha1);
+		parms.put("fecha2", fecha2);
+		parms.put("datasource",dbsource);
+	//	parms.put("datasource",nuevoclientedao.findByFechContratacionBetween(fechax, fechay));
 		return new ModelAndView(view,parms);
 		
 	}
@@ -330,15 +369,24 @@ public class TacticoController {
 		Bitacora bitacora=new Bitacora();
 		int x=Integer.parseInt(historepo.getnumid());
 		bitacora=historepo.findOne(x);
-		String fecha1=bitacora.getFecha1();
-		String fecha2=bitacora.getFecha2();
+		String fechax=bitacora.getFecha1();
+		String fechay=bitacora.getFecha2();
 		
 		SimpleDateFormat dx=new SimpleDateFormat("yyyy-mm-dd");
-	    Date fechax=dx.parse(fecha1);
-		Date fechay=dx.parse(fecha2);
+	    Date fecha1=dx.parse(fechax);
+		Date fecha2=dx.parse(fechay);
 		
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		String user = authentication.getName();
+		
+		List<Clienteservicio> service=servicedao.findByFechacontractoBetween(fecha1, fecha2);
+		int zx=service.size();
 		Map<String,Object> parms=new HashMap<>();
-		parms.put("datasource",servicedao.findByFechacontractoBetween(fechax, fechay));
+		parms.put("registros", zx);
+		parms.put("user", user);
+		parms.put("fecha1", fecha1);
+		parms.put("fecha2", fecha2);
+		parms.put("datasource",dbsource);
 		return new ModelAndView(view,parms);
 		
 	}
@@ -400,15 +448,25 @@ public class TacticoController {
 		Bitacora bitacora=new Bitacora();
 		int x=Integer.parseInt(historepo.getnumid());
 		bitacora=historepo.findOne(x);
-		String fecha1=bitacora.getFecha1();
-		String fecha2=bitacora.getFecha2();
+		String fechax=bitacora.getFecha1();
+		String fechay=bitacora.getFecha2();
 		
 		SimpleDateFormat dx=new SimpleDateFormat("yyyy-mm-dd");
-	    Date fechax=dx.parse(fecha1);
-		Date fechay=dx.parse(fecha2);
+	    Date fecha1=dx.parse(fechax);
+		Date fecha2=dx.parse(fechay);
 		
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		String user = authentication.getName();
+		
+		List<TbEmpleado> emp=empdao.findByFechaingresoBetween(fecha1, fecha2);
+		int zx=emp.size();
 		Map<String,Object> parms=new HashMap<>();
-		parms.put("datasource",empdao.findByFechaingresoBetween(fechax, fechay));
+		parms.put("registros", zx);
+		parms.put("user", user);
+		parms.put("fecha1", fecha1);
+		parms.put("fecha2", fecha2);
+		parms.put("datasource",dbsource);
+		
 		return new ModelAndView(view,parms);
 		
 	}
@@ -470,15 +528,26 @@ public class TacticoController {
 		Bitacora bitacora=new Bitacora();
 		int x=Integer.parseInt(historepo.getnumid());
 		bitacora=historepo.findOne(x);
-		String fecha1=bitacora.getFecha1();
-		String fecha2=bitacora.getFecha2();
+		String fechax=bitacora.getFecha1();
+		String fechay=bitacora.getFecha2();
 		
 		SimpleDateFormat dx=new SimpleDateFormat("yyyy-mm-dd");
-	    Date fechax=dx.parse(fecha1);
-		Date fechay=dx.parse(fecha2);
+	    Date fecha1=dx.parse(fechax);
+		Date fecha2=dx.parse(fechay);
+		
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		String user = authentication.getName();
 		
 		Map<String,Object> parms=new HashMap<>();
-		parms.put("datasource",embarrepo.findByFechasalidaBetween(fechax, fechay));
+		
+		List<TbEmbarque> emb=embarrepo.findByFechasalidaBetween(fecha1, fecha2);
+		
+		int zx=emb.size();
+		parms.put("registros", zx);
+		parms.put("user", user);
+		parms.put("fecha1", fecha1);
+		parms.put("fecha2", fecha2);
+		parms.put("datasource",dbsource);
 		return new ModelAndView(view,parms);
 		
 	}
